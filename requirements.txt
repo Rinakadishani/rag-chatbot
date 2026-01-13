@@ -1,0 +1,25 @@
+# Core dependencies
+streamlit==1.31.0
+python-dotenv==1.0.0
+
+# Document processing
+PyPDF2==3.0.1
+python-docx==1.1.0
+markdown==3.5.2
+beautifulsoup4==4.12.3
+
+# Vector database and embeddings
+chromadb==0.4.22
+sentence-transformers==2.3.1
+
+# LLM integration
+anthropic==0.18.1
+
+# Search and ranking
+rank-bm25==0.2.2
+
+# Utilities
+pandas==2.2.0
+numpy==1.26.3
+tqdm==4.66.1
+tiktoken==0.6.0
