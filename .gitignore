@@ -53,3 +53,4 @@ Thumbs.db
 .streamlit/.env
 documents/*.pdf
 test_*.py
+test_*.py
