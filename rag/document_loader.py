@@ -1,3 +1,7 @@
+"""
+Document loader module for RAG chatbot
+Supports PDF, DOCX, MD, TXT files
+"""
 import os
 from pathlib import Path
 from typing import List, Dict, Any
@@ -15,7 +19,7 @@ class Document:
 
 
 class DocumentLoader:
-    
+    """Loads documents from various file formats"""
     @staticmethod
     def load_pdf(file_path: str) -> List[Document]:
         documents = []
