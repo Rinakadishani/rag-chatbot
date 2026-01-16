@@ -3,6 +3,8 @@ from .chunker import TextChunker
 from .embeddings import EmbeddingModel
 from .vector_store import VectorStore
 from .retriever import HybridRetriever
+from .generator import AnswerGenerator
+from .chatbot import RAGChatbot
 
 __all__ = [
     'DocumentLoader',
@@ -11,4 +13,6 @@ __all__ = [
     'EmbeddingModel',
     'VectorStore',
     'HybridRetriever',
+    'AnswerGenerator',
+    'RAGChatbot',
 ]
