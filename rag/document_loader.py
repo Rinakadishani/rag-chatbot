@@ -1,7 +1,7 @@
 """
 Document loader module for RAG chatbot
-Supports PDF, DOCX, MD, TXT files
 """
+
 import os
 from pathlib import Path
 from typing import List, Dict, Any
@@ -19,7 +19,7 @@ class Document:
 
 
 class DocumentLoader:
-    """Loads documents from various file formats"""
+    
     @staticmethod
     def load_pdf(file_path: str) -> List[Document]:
         documents = []
@@ -29,13 +29,23 @@ class DocumentLoader:
                 for page_num, page in enumerate(pdf_reader.pages, 1):
                     text = page.extract_text()
                     if text.strip():
+                        filename = os.path.basename(file_path).lower()
+                        category = 'general'
+                        if any(word in filename for word in ['health', 'medical', 'patient', 'clinical', 'care']):
+                            category = 'healthcare'
+                        elif any(word in filename for word in ['insurance', 'coverage', 'policy', 'claim']):
+                            category = 'insurance'
+                        elif any(word in filename for word in ['pharma', 'drug', 'trial', 'medicine']):
+                            category = 'pharmaceutical'
+                        
                         doc = Document(
                             content=text,
                             metadata={
                                 'source': os.path.basename(file_path),
                                 'page': page_num,
                                 'file_type': 'pdf',
-                                'file_path': file_path
+                                'file_path': file_path,
+                                'category': category
                             }
                         )
                         documents.append(doc)
@@ -51,12 +61,22 @@ class DocumentLoader:
                 text = file.read()
                 
                 if text.strip():
+                    filename = os.path.basename(file_path).lower()
+                    category = 'general'
+                    if any(word in filename for word in ['health', 'medical', 'patient', 'clinical', 'care']):
+                        category = 'healthcare'
+                    elif any(word in filename for word in ['insurance', 'coverage', 'policy', 'claim']):
+                        category = 'insurance'
+                    elif any(word in filename for word in ['pharma', 'drug', 'trial', 'medicine']):
+                        category = 'pharmaceutical'
+                    
                     document = Document(
                         content=text,
                         metadata={
                             'source': os.path.basename(file_path),
                             'file_type': 'txt',
-                            'file_path': file_path
+                            'file_path': file_path,
+                            'category': category
                         }
                     )
                     documents.append(document)
@@ -77,7 +97,7 @@ class DocumentLoader:
             '.pdf': DocumentLoader.load_pdf,
             '.txt': DocumentLoader.load_txt,
         }
-        
+
         for file_path in path.rglob('*'):
             if file_path.is_file():
                 ext = file_path.suffix.lower()

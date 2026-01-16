@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, List
 from .embeddings import EmbeddingModel
 from .vector_store import VectorStore
 from .retriever import HybridRetriever
@@ -10,6 +10,7 @@ from .chunker import TextChunker
 class RAGChatbot:
     
     def __init__(self, api_key: str = None):
+
         print("Initializing RAG Chatbot...")
         print("-" * 60)
         
@@ -44,13 +45,14 @@ class RAGChatbot:
         self,
         question: str,
         n_results: int = 5,
-        verbose: bool = False
+        verbose: bool = False,
+        categories: List[str] = None
     ) -> Dict[str, Any]:
 
         if verbose:
             print(f"\nQuestion: {question}")
             print("-" * 60)
-    
+        
         if not self.generator.check_relevance(question):
             return {
                 'answer': "I'm sorry, but your question doesn't seem to be related to healthcare, insurance, or pharmaceutical topics. I can only answer questions about these domains based on the documents I have access to.",
@@ -59,19 +61,21 @@ class RAGChatbot:
                 'relevant': False
             }
         
-        # Retrieve relevant chunks
         if verbose:
             print(f"Retrieving top {n_results} relevant chunks...")
+            if categories:
+                print(f"Filtering by categories: {categories}")
         
         retrieved_chunks = self.retriever.retrieve(
             query=question,
-            n_results=n_results
+            n_results=n_results,
+            categories=categories
         )
         
         if verbose:
             print(f"Retrieved {len(retrieved_chunks)} chunks")
             for i, chunk in enumerate(retrieved_chunks, 1):
-                print(f"\n  Chunk {i} (score: {chunk['score']:.3f})")
+                print(f"\n  Chunk {i} (score: {chunk['score']:.3f}, category: {chunk['metadata'].get('category', 'N/A')})")
                 print(f"  Source: {chunk['metadata']['source']}")
                 print(f"  Preview: {chunk['content'][:100]}...")
         
@@ -85,6 +89,7 @@ class RAGChatbot:
         
         result['retrieved_chunks'] = len(retrieved_chunks)
         result['relevant'] = True
+        result['filtered_categories'] = categories if categories else ['all']
         
         if verbose:
             print("Answer generated")

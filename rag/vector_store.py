@@ -1,6 +1,5 @@
 """
 Vector store module for RAG chatbot
-Manages ChromaDB for storing and retrieving document chunks
 """
 
 from typing import List, Dict, Any, Optional
@@ -10,16 +9,13 @@ import uuid
 
 
 class VectorStore:
-    """Vector database for storing and retrieving document chunks"""
     
     def __init__(self, collection_name: str = "rag_documents", persist_directory: str = "./chroma_db"):
-        """
-        Initialize vector store.
-        """
+
         print(f"Initializing ChromaDB at {persist_directory}...")
         
         self.client = chromadb.PersistentClient(path=persist_directory)
-        
+
         self.collection = self.client.get_or_create_collection(
             name=collection_name,
             metadata={"hnsw:space": "cosine"}
@@ -34,7 +30,7 @@ class VectorStore:
     ) -> None:
         if len(chunks) != len(embeddings):
             raise ValueError("Number of chunks and embeddings must match")
-
+        
         ids = [str(uuid.uuid4()) for _ in chunks]
         documents = [chunk['content'] for chunk in chunks]
         metadatas = [chunk['metadata'] for chunk in chunks]
@@ -63,13 +59,13 @@ class VectorStore:
         n_results: int = 5,
         filter_metadata: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
-        """
-        Search for similar documents
-        """
+
+        where_clause = filter_metadata if filter_metadata else None
+        
         results = self.collection.query(
             query_embeddings=[query_embedding],
             n_results=n_results,
-            where=filter_metadata
+            where=where_clause
         )
         
         formatted_results = {
