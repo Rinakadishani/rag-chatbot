@@ -58,3 +58,14 @@ chroma_db/
 ingest_documents.py
 test_retrieval.py
 demo.py
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Local database (too large for GitHub)
+chroma_db/
+
+# Test files
+test_*.py
+system_check.py
+demo.py
