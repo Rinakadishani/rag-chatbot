@@ -1,8 +1,17 @@
+import os
 import streamlit as st
 from rag import RAGChatbot
 from dotenv import load_dotenv
 
 load_dotenv()
+
+
+if not os.path.exists('./chroma_db'):
+    with st.spinner("First-time setup: Building vector database... This takes 5-10 minutes."):
+        import subprocess
+        subprocess.run(['python3', 'ingest_documents.py'])
+        st.success("Database built! Reloading app...")
+        st.rerun()
 
 st.set_page_config(
     page_title="RAG Chatbot",
